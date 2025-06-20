@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "letsChat",
+    "slug": "letsChat",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/chataaplogo.webp",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/chataaplogo.webp",
+        "backgroundColor": "#ffffff"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.avinashdod15.letsChat"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "222ae82d-4a5f-4345-9c40-4a676c1c5961"
+      }
+    }
+  }
+}
