@@ -4,10 +4,12 @@ import { persistAuthReducer } from "./persistor/reduxPersist";
 
 import authReducer from "./slices/authSlice";
 import userReducer from "./slices/userSlice";
+import chatReducer from "./slices/ChatSLice";
 
 const rootReducer = combineReducers({
   auth: persistAuthReducer(authReducer),
-  user: userReducer
+  user: userReducer,
+  chat: chatReducer,
 });
 
 export const store = configureStore({

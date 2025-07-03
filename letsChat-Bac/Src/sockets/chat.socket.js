@@ -1,5 +1,5 @@
 module.exports = (io, socket) => {
-    console.log('Chat socket initialized for socket:', socket.id);
+    // console.log('Chat socket initialized for socket:', socket.id);
     
     // Implement your chat event handlers here
     socket.on('sendMessage', (messageData) => {
