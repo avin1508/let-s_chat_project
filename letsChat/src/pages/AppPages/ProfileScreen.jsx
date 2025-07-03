@@ -15,6 +15,8 @@ import colors from '../../Constants/Theme';
 import { useEffect } from 'react';
 import { getUserProfileApi } from '../../reduxToolkit/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { logOutUser } from '../../reduxToolkit/slices/authSlice';
+import { persistor } from '../../reduxToolkit/store';
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -23,6 +25,11 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(getUserProfileApi());
   }, [dispatch]);
+
+  const handleLogout = () => {
+      dispatch(logOutUser());
+      persistor.purge(); 
+    }
 
   const headerHeight = 80 + StatusBar.currentHeight;
 
@@ -50,6 +57,8 @@ const ProfileScreen = ({ navigation }) => {
     );
   }
 
+  console.log("userProfile", userProfile?.data?.profilePic)
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -72,7 +81,7 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Profile</Text>
           </View>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity style={styles.iconButton} onPress={handleLogout}>
             <Icon name="ellipsis-v" size={20} color={colors.card} />
           </TouchableOpacity>
         </View>

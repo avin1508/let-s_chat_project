@@ -1,10 +1,13 @@
+const authSocket = require('./auth.socket');
 const chatSocket = require('./chat.socket');
+
 
 module.exports = function socketHandler(io) {
     console.log('Socket.IO Server Initialized ⚡');
 
     io.on('connection', (socket) => {
         console.log('New User connected: ', socket.id);
+        console.log('🆔 Socket ID:', socket.id ?? 'undefined');
 
 
         socket.on('userOnline', (data) => {
@@ -14,6 +17,7 @@ module.exports = function socketHandler(io) {
         
 
         // Initialize all socket handlers
+        authSocket(io, socket);
         chatSocket(io, socket);
 
         socket.on('disconnect', () => {

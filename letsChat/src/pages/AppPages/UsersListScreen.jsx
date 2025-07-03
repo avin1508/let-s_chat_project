@@ -1,5 +1,4 @@
-// UsersListScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, 
   Text, 
@@ -16,64 +15,121 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import colors from '../../Constants/Theme';
-import { logOutUser } from '../../reduxToolkit/slices/authSlice';
-import { persistor } from '../../reduxToolkit/store';
-import { useDispatch } from 'react-redux';
 
-const chatData = [
-  { id: '1', name: 'John Doe', lastMessage: 'Hey, how are you?', time: '10:30 AM', unread: 2, avatar: 'https://i.pravatar.cc/150?img=1' },
-  { id: '2', name: 'Alice Smith', lastMessage: 'See you tomorrow!', time: '9:45 AM', unread: 0, avatar: 'https://i.pravatar.cc/150?img=2' },
-  { id: '3', name: 'Mike Johnson', lastMessage: 'Thanks for the help!', time: 'Yesterday', unread: 1, avatar: 'https://i.pravatar.cc/150?img=3' },
-  { id: '4', name: 'Sarah Wilson', lastMessage: '😊 Great idea!', time: 'Yesterday', unread: 3, avatar: 'https://i.pravatar.cc/150?img=4' },
-  { id: '5', name: 'David Brown', lastMessage: 'Where are you?', time: 'Monday', unread: 0, avatar: 'https://i.pravatar.cc/150?img=5' },
-  { id: '6', name: 'Emma Davis', lastMessage: 'Let me check...', time: 'Monday', unread: 0, avatar: 'https://i.pravatar.cc/150?img=6' },
-  { id: '7', name: 'James Miller', lastMessage: 'Photo sent 📷', time: 'Sunday', unread: 2, avatar: 'https://i.pravatar.cc/150?img=7' },
-  { id: '8', name: 'Olivia Taylor', lastMessage: 'See you then!', time: 'Sunday', unread: 0, avatar: 'https://i.pravatar.cc/150?img=8' },
-  { id: '9', name: 'William Anderson', lastMessage: 'Okay, got it!', time: 'Saturday', unread: 1, avatar: 'https://i.pravatar.cc/150?img=9' },
-  { id: '10', name: 'Sophia Thomas', lastMessage: 'Thanks! ❤️', time: 'Friday', unread: 0, avatar: 'https://i.pravatar.cc/150?img=10' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserChats } from '../../reduxToolkit/slices/ChatSLice';
 
 const UsersListScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const [chats, setChats] = useState(chatData);
+  const [chats, setChats] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const handleLogout = () => {
-    dispatch(logOutUser());
-    persistor.purge(); 
-  }
+  
+  
+
+  useEffect(() => {
+    dispatch(getUserChats());
+  }, []);
+
+  const { userChats, userChatsLoading, userChatsError } = useSelector(state => state.chat);
+  const { user } = useSelector(state => state.auth);
+  const currentUserId = user?.data?.userId;
+
+  useEffect(() => {
+    if (userChats.data) {
+      setChats(userChats.data);
+    }
+  }, [userChats.data]);
 
   const headerHeight = 80 + StatusBar.currentHeight;
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.chatItem} onPress={()=> navigation.navigate("ChatScreen", {user: item})}>
-      <Image 
-        source={{ uri: item.avatar }} 
-        style={styles.avatar} 
-      />
-      <View style={styles.chatContent}>
-        <View style={styles.chatHeader}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
-        </View>
-        <View style={styles.messageContainer}>
-          <Text 
-            style={[
-              styles.lastMessage, 
-              item.unread > 0 && styles.unreadMessage
-            ]}
-            numberOfLines={1}
-          >
-            {item.lastMessage}
-          </Text>
-          {item.unread > 0 && (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadCount}>{item.unread}</Text>
+  const getChatName = (chat) => {
+    if (chat.isGroupChat) {
+      return chat.chatName || "Group Chat";
+    } else {
+      // Find the other participant (not the current user)
+      const otherParticipant = chat.participants.find(
+        participant => participant._id !== currentUserId
+      );
+      return otherParticipant?.name || "Unknown";
+    }
+  };
+
+  const getAvatar = (chat) => {
+    if (chat.isGroupChat) {
+      return chat.groupPic || require('../../../assets/unknown.png');
+    } else {
+      // Find the other participant (not the current user)
+      const otherParticipant = chat.participants.find(
+        participant => participant._id !== currentUserId
+      );
+      return otherParticipant?.profilePic 
+        ? { uri: otherParticipant.profilePic } 
+        : require('../../../assets/unknown.png');
+    }
+  };
+
+  const getLastMessageInfo = (chat) => {
+    if (!chat.lastMessage) return null;
+    
+    const isCurrentUserSender = chat.lastMessage.sender._id === currentUserId;
+    const senderPrefix = isCurrentUserSender ? "You: " : "";
+    
+    return {
+      text: senderPrefix + chat.lastMessage.content,
+      time: new Date(chat.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+  };
+
+  const renderItem = ({ item }) => {
+    const lastMessage = getLastMessageInfo(item);
+    const isUnread = false; // You can add logic for unread messages
+    
+    return (
+      <TouchableOpacity 
+        style={styles.chatItem} 
+        onPress={() => navigation.navigate("ChatScreen", { chat: item })}
+      >
+        <Image 
+          source={getAvatar(item)} 
+          style={styles.avatar} 
+          defaultSource={require('../../../assets/unknown.png')}
+        />
+        
+        <View style={styles.chatContent}>
+          <View style={styles.chatHeader}>
+            <Text style={styles.name} numberOfLines={1}>
+              {getChatName(item)}
+            </Text>
+            {lastMessage && (
+              <Text style={styles.time}>
+                {lastMessage.time}
+              </Text>
+            )}
+          </View>
+          
+          {lastMessage ? (
+            <View style={styles.messageContainer}>
+              <Text 
+                style={[styles.lastMessage, isUnread && styles.unreadMessage]} 
+                numberOfLines={1}
+              >
+                {lastMessage.text}
+              </Text>
+              {isUnread && (
+                <View style={styles.unreadBadge}>
+                  <Text style={styles.unreadCount}>1</Text>
+                </View>
+              )}
             </View>
+          ) : (
+            <Text style={styles.lastMessage} numberOfLines={1}>
+              No messages yet
+            </Text>
           )}
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <KeyboardAvoidingView
@@ -108,7 +164,7 @@ const UsersListScreen = ({navigation}) => {
               <TouchableOpacity style={styles.iconButton}>
                 <Icon name="camera" size={20} color={colors.card} />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.iconButton, { marginLeft: 15 }]} onPress={handleLogout}>
+              <TouchableOpacity style={[styles.iconButton, { marginLeft: 15 }]}>
                 <Icon name="qrcode" size={20} color={colors.card} />
               </TouchableOpacity>
             </View>
@@ -138,7 +194,7 @@ const UsersListScreen = ({navigation}) => {
         <FlatList
           data={chats}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           contentContainerStyle={styles.listContainer}
           style={styles.list}
           showsVerticalScrollIndicator={false}
@@ -147,7 +203,10 @@ const UsersListScreen = ({navigation}) => {
         />
 
         {/* Floating New Chat Button */}
-        <TouchableOpacity style={styles.newChatButton}>
+        <TouchableOpacity 
+          style={styles.newChatButton}
+          onPress={() => navigation.navigate("NewChat")}
+        >
           <Icon name="comment-alt" size={24} color={colors.card} />
         </TouchableOpacity>
       </SafeAreaView>
@@ -243,6 +302,7 @@ const styles = StyleSheet.create({
   },
   chatContent: {
     flex: 1,
+    justifyContent: 'center',
   },
   chatHeader: {
     flexDirection: 'row',
@@ -253,6 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.textPrimary,
+    maxWidth: '80%',
   },
   time: {
     fontSize: 12,
@@ -262,12 +323,12 @@ const styles = StyleSheet.create({
   messageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   lastMessage: {
     fontSize: 14,
     color: colors.textSecondary,
     flex: 1,
+    marginRight: 8,
   },
   unreadMessage: {
     color: colors.textPrimary,
@@ -298,6 +359,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
 });
 

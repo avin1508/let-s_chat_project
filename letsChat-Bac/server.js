@@ -25,7 +25,7 @@ const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
       // Log for debugging
-      if(origin) console.log("Socket origin:", origin);
+      // if(origin) console.log("Socket origin:-======", origin);
 
       // Allow requests with no origin (mobile apps, Postman, etc)
       if (!origin) return callback(null, true);
@@ -36,6 +36,7 @@ const io = new Server(server, {
         'https://yourweb.com',
         'https://admin.yourweb.com',
         'http://192.168.89.99:8080', 
+        'http://localhost:5173'
       ];
 
       if (allowedOrigins.includes(origin)) {
@@ -50,24 +51,24 @@ const io = new Server(server, {
 });
 
 
-        // ✅ Initialize socket events
-        socketHandler(io);
+    // ✅ Initialize socket events
+    socketHandler(io);
 
-        // ✅ Start the server
-        server.listen(PORT, '0.0.0.0', () => {
-            console.log(`Server running on port ${PORT}`);
+    // ✅ Start the server
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+
+    process.on('unhandledRejection', err => {
+        console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+        console.log(err);
+        server.close(() => {
+            process.exit(1);
         });
+    });
 
-        process.on('unhandledRejection', err => {
-            console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-            console.log(err);
-            server.close(() => {
-                process.exit(1);
-            });
-        });
-
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
+} catch (error) {
+    console.log(error);
+    process.exit(1);
+}
 })();
