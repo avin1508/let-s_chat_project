@@ -32,10 +32,10 @@ const io = new Server(server, {
 
       const allowedOrigins = [
         'http://localhost:3000',
-        'http://192.168.89.99:3000', 
+        'http://192.168.172.99:3000', 
         'https://yourweb.com',
         'https://admin.yourweb.com',
-        'http://192.168.89.99:8080', 
+        'http://192.168.172.99:8080', 
         'http://localhost:5173'
       ];
 

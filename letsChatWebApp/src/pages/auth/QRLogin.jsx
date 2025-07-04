@@ -14,13 +14,12 @@ useEffect(() => {
   const handleSession = (e) => {
     const sessionId = e.detail;
     setSessionId(sessionId); // ✅ update state
-    console.log("Session ID received from backend:", sessionId);
   };
 
   const handleAuth = (e) => {
     const { user, token } = e.detail;
     console.log("✅ Authenticated!", user, token);
-    localStorage.setItem('token', token);
+    // localStorage.setItem('token', token);
 
   };
 
@@ -82,11 +81,15 @@ useEffect(() => {
           <p style={styles.brandSubtitle}>Connect with friends instantly</p>
           
           <div style={styles.qrContainer}>
-            <img 
-              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=letschat-auth-token" 
-              alt="QR Code" 
-              style={styles.qrCode}
-            />
+            {sessionId ? (
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${sessionId}`} 
+                  alt="QR Code" 
+                  style={styles.qrCode}
+                />
+              ) : (
+                <p style={styles.qrHelp}>Generating QR Code...</p>
+             )}
             <p style={styles.qrHelp}>Scan this QR code with your phone</p>
           </div>
         </div>

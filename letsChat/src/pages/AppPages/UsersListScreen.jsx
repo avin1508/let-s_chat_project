@@ -164,7 +164,7 @@ const UsersListScreen = ({navigation}) => {
               <TouchableOpacity style={styles.iconButton}>
                 <Icon name="camera" size={20} color={colors.card} />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.iconButton, { marginLeft: 15 }]}>
+              <TouchableOpacity style={[styles.iconButton, { marginLeft: 15 }]} onPress={() => navigation.navigate("QrCodeScanner")}>
                 <Icon name="qrcode" size={20} color={colors.card} />
               </TouchableOpacity>
             </View>
