@@ -5,6 +5,7 @@ import ChatScreen from "../pages/AppPages/ChatScreen"
 import ProfileScreen from "../pages/AppPages/ProfileScreen"
 import UserProfileScreen from "../pages/AppPages/UserProfileScreen"
 import StatusScreen from "../pages/AppPages/StatusScreen"
+import QrCodeScanner from "../pages/webAuthPages/QrCodeScanner"
 
 import AppTabNavigation from "./AppTabNavigation"
 
@@ -16,6 +17,7 @@ const AppNavigation = () => {
         <Stack.Screen name="Tabs" component={AppTabNavigation} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="UsersProfileScreen" component={UserProfileScreen} />
+        <Stack.Screen name="QrCodeScanner" component={QrCodeScanner} />
     </Stack.Navigator>
   )
 }

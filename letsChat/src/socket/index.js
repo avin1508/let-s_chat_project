@@ -46,6 +46,14 @@ export const initSocketConnection = (user) => {
     });
 };
 
+export const getSocket = () => {
+    if (!socket) {
+        console.error("Socket is not initialized. Call initSocketConnection() first.");
+        return null;
+    }
+    return socket;
+};
+
 export const disconnectSocket = () => {
     if (socket) {
         socket.disconnect();
