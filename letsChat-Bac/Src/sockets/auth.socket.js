@@ -17,6 +17,7 @@ module.exports = (io, socket) => {
         const webSocketId = sessionMap.get(sessionId);
         if(webSocketId){
             io.to(webSocketId).emit('authenticated', {user, token});
+            socket.emit('session-confirmed', {message: "Web login successful"});
             sessionMap.delete(sessionId);
             console.log(`Session confirmed: ${sessionId}`);
         }else{

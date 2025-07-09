@@ -3,8 +3,13 @@ import apalogo from '../../assets/chatLogo.png';
 import colors from '../../assets/Theme';
 import { requestSession } from '../../sockets/modules/auth.socket';
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const QRLogin = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [sessionId, setSessionId] = useState(null);
 
@@ -19,7 +24,14 @@ useEffect(() => {
   const handleAuth = (e) => {
     const { user, token } = e.detail;
     console.log("✅ Authenticated!", user, token);
-    // localStorage.setItem('token', token);
+
+    const userData = {
+      _id: user._id,
+      token
+    }
+
+    dispatch(setUser(userData));
+     navigate('/app/chat');
 
   };
 
