@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, StatusBar, Platform } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -8,6 +8,7 @@ import colors from '../../Constants/Theme';
 import { emitConfirmSession } from '../../socket/auth.socket';
 import {  useSelector } from 'react-redux';
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || (Platform.OS === 'ios' ? 44 : 24);
+import { listenAuthEvents } from '../../socket/Listners/auth.listener';
 
 export default function QRScanner() {
   const navigation = useNavigation();
@@ -17,6 +18,11 @@ export default function QRScanner() {
 
   const { user } = useSelector(state => state.auth);
    console.log("thisis ths user data did you get ", user);
+
+   useEffect(() => {
+  listenAuthEvents(navigation); // ✅ Hook up the listener
+}, []);
+
 
   if (!permission) {
     return <View />;

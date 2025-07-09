@@ -1,12 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import QRLogin from '../pages/auth/QRLogin';
+import { useSelector } from 'react-redux';
 
 const AuthRoutes = () => {
-  const isLoggedIn = false;
+
+  const user = useSelector((state) => state.auth.user);
+
+
 
   return (
     <Routes>
-      <Route path="qr" element={isLoggedIn ? <Navigate to="/app/chat" replace /> : <QRLogin />} />
+      <Route path="qr" element={user ? <Navigate to="/app/chat" replace /> : <QRLogin />} />
     </Routes>
   );
 };
