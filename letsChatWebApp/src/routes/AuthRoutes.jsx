@@ -10,7 +10,7 @@ const AuthRoutes = () => {
 
   return (
     <Routes>
-      <Route path="qr" element={user ? <Navigate to="/app/chat" replace /> : <QRLogin />} />
+      <Route path="qr" element={user ? <Navigate to="/app/chats" replace /> : <QRLogin />} />
     </Routes>
   );
 };
