@@ -1,4 +1,3 @@
-// src/routes/AppRouter.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthRoutes from './AuthRoutes';
 import AppRoutes from './AppRoutes';

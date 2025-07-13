@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AppNavStrip from '../components/AppNavStrip';
 import colors from '../assets/Theme';
+import { Outlet } from 'react-router-dom'; // ✅ import Outlet
 
 const MainLayout = ({ children }) => {
   const [activeTab, setActiveTab] = useState('chat');
@@ -12,16 +13,17 @@ const MainLayout = ({ children }) => {
       height: '100vh',
       backgroundColor: colors.background
     }}>
-      {/* WhatsApp-like navigation strip */}
       <AppNavStrip activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* Main content area */}
       <div style={{ 
         flex: 1, 
         overflow: 'auto',
         position: 'relative'
       }}>
-        {children}
+        {/* ✅ Render nested routes */}
+        <Outlet >
+          {children}
+        </Outlet>
       </div>
     </div>
   );
