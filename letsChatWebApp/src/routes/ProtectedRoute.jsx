@@ -1,4 +1,3 @@
-// src/routes/ProtectedRoute.jsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/auth/qr" replace />;
   }
 
-  return children; // ✅ Must render children here
+  return children; 
 };
 
 export default ProtectedRoute;

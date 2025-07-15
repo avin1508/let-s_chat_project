@@ -1,8 +1,8 @@
-
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../Layouts/MainLayout';
-import ChatHome from '../pages/appPages/ChatHome';
+import ChatLayout from '../Layouts/ChatLayout';
+import ChatListGreeting from '../components/ChatListGreeting';
 import Conversation from '../pages/appPages/Conversation';
 import StatusPage from '../pages/appPages/StatusPage';
 import SettingPage from '../pages/appPages/SettingPage';
@@ -20,9 +20,16 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<ChatHome />} />
-        <Route path="chats" element={<ChatHome />} />
-        <Route path="chat/:id" element={<Conversation />} />
+        {/* 👇 Default redirect to chats */}
+        <Route index element={<Navigate to="chats" />} />
+
+        {/* ✅ Chat layout for chats and chat/:id */}
+        <Route path="chats" element={<ChatLayout />}>
+          <Route index element={<ChatListGreeting />} />
+          <Route path=":id" element={<Conversation />} />
+        </Route>
+
+        {/* ✅ These are separate pages */}
         <Route path="status" element={<StatusPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingPage />} />

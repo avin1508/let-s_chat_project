@@ -5,7 +5,6 @@ import {
   RiGroupLine,
   RiSettings3Line
 } from 'react-icons/ri';
-import { FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import colors from '../assets/Theme';
 
