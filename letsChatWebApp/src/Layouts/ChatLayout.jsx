@@ -1,21 +1,39 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import ChatList from '../components/ChatList';
+import colors from '../assets/Theme';
 
 const ChatLayout = () => {
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ width: '25%', backgroundColor: '#f3f4f6', padding: '16px', borderRight: '1px solid #d1d5db' }}>
-        <h2>Chats</h2>
-        <ul>
-          <li>Chat 1</li>
-          <li>Chat 2</li>
-        </ul>
+    <div style={styles.container}>
+      <div style={styles.sidebar}>
+        <ChatList />
       </div>
-      <div style={{ flex: 1, padding: '16px' }}>
+      <div style={styles.chatContent}>
         <Outlet />
       </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flex: 1,
+    height: '100vh',
+  },
+  sidebar: {
+    width: '30%',
+    borderRight: `1px solid ${colors.border}`,
+    overflowY: 'auto',
+  },
+  chatContent: {
+    flex: 1,
+    backgroundColor: colors.background,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 };
 
 export default ChatLayout;
